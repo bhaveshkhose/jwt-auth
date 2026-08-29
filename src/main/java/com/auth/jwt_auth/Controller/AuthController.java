@@ -48,11 +48,14 @@ public class AuthController {
         );
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        String token = jwtUnit.generateSecretKey(userDetails.getUsername()) ;
+        User authUser = userRepository.findByUsername(userDetails.getUsername());
+
+        String token = jwtUnit.generateSecretKey(authUser.getUsername() , authUser.getEmail()) ;
 
         LoginResponse loginResponse = new LoginResponse(
                 token ,
-                userDetails.getUsername()
+                authUser.getUsername(),
+                authUser.getEmail()
 
         );
 
@@ -71,6 +74,7 @@ public class AuthController {
         User newUser = new User(
                 null ,
                 user.getUsername(),
+                user.getEmail(),
                 passwordEncoder.encode(user.getPassword())
         );
 

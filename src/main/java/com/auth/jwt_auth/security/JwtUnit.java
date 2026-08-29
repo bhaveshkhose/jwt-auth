@@ -41,10 +41,11 @@ public class JwtUnit {
 
 
     // Generate JWT Token
-    public String generateSecretKey(String username) {
+    public String generateSecretKey(String username , String email) {
 
         return Jwts.builder()
                 .subject(username)
+                .claim("email" , email)
                 .issuedAt(new Date())
                 .expiration(
                         new Date(
@@ -65,6 +66,17 @@ public class JwtUnit {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+
+    //Get email form the token
+    public String getEmailFromToken(String token) {
+
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("email", String.class);
     }
 
 
